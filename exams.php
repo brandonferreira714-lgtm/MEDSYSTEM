@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exames - Sistema Médico</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">MedSystem</div>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.php">📊 Visão Geral</a></li>
+                <li><a href="patients.php">👥 Pacientes</a></li>
+                <li><a href="new-patient.php">➕ Novo Paciente</a></li>
+                <li><a href="appointments.php">📅 Consultas</a></li>
+                <li><a href="exams.php" class="active">🔬 Exames</a></li>
+                <li><a href="prescriptions.php">💊 Receitas</a></li>
+                <li><a href="reports.php">📋 Relatórios</a></li>
+                <li><a href="./index.php">🚪 Sair</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <h1 class="page-title">Exames</h1>
+                <div class="user-info">
+                    <span>Dr. João Silva</span>
+                    <div class="user-avatar">JS</div>
+                </div>
+            </header>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">15</div>
+                    <div class="stat-label">Pendentes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Hoje</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">23</div>
+                    <div class="stat-label">Esta Semana</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">127</div>
+                    <div class="stat-label">Este Mês</div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Action Buttons -->
+                <div style="display: flex; gap: 15px; margin-bottom: 30px; align-items: center; flex-wrap: wrap;">
+                    <button class="btn" onclick="openRequestExamModal()">
+                        🔬 Solicitar Exame
+                    </button>
+                    <button class="btn btn-secondary" onclick="openResultModal()">
+                        📊 Registrar Resultado
+                    </button>
+                    <div style="display: flex; gap: 10px; margin-left: auto; flex-wrap: wrap;">
+                        <input type="date" id="filterDate" class="form-control" style="width: auto;">
+                        <select id="filterStatus" style="width: auto;">
+                            <option value="">Todos os Status</option>
+                            <option value="solicitado">Solicitado</option>
+                            <option value="agendado">Agendado</option>
+                            <option value="realizado">Realizado</option>
+                            <option value="resultado_pronto">Resultado Pronto</option>
+                            <option value="entregue">Entregue</option>
+                            <option value="cancelado">Cancelado</option>
+                        </select>
+                        <select id="filterType" style="width: auto;">
+                            <option value="">Todos os Tipos</option>
+                            <option value="laboratorio">Laboratório</option>
+                            <option value="imagem">Imagem</option>
+                            <option value="cardiologico">Cardiológico</option>
+                            <option value="neurologico">Neurológico</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Exams List -->
+                <div id="examsList">
+                    <!-- Today's Exams -->
+                    <h3 style="color: #2c3e50; margin-bottom: 20px; border-left: 4px solid #e74c3c; padding-left: 15px;">
+                        🔬 Exames de Hoje - 30 de Junho, 2025
+                    </h3>
+
+                    <div class="exam-card">
+                        <div class="exam-header">
+                            <div>
+                                <div class="exam-title">Hemograma Completo</div>
+                                <div style="color: #666; margin: 5px 0;">
+                                    👤 <strong>Maria Santos Silva</strong> | 🆔 #001
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="exam-date">30/06/2025 - 08:00</div>
+                                <span class="status-badge status-realizado">Realizado</span>
+                            </div>
+                        </div>
+                        <div class="exam-result">
+                            <strong>📋 Tipo:</strong> Laboratório | <strong>🏥 Local:</strong> Lab Central<br>
+                            <strong>📝 Indicação:</strong> Rotina pré-operatória<br>
+                            <strong>⚠️ Observações:</strong> Paciente em jejum de 12h
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                            <button class="btn-small btn-primary" onclick="viewResult(1)">📊 Ver Resultado</button>
+                            <button class="btn-small btn-success" onclick="downloadResult(1)">📥 Download</button>
+                            <button class="btn-small btn-warning" onclick="sendToPatient(1)">📧 Enviar ao Paciente</button>
+                            <button class="btn-small btn-primary" onclick="printResult(1)">🖨️ Imprimir</button>
+                        </div>
+                    </div>
+
+                    <div class="exam-card">
+                        <div class="exam-header">
+                            <div>
+                                <div class="exam-title">Raio-X Tórax</div>
+                                <div style="color: #666; margin: 5px 0;">
+                                    👤 <strong>João Oliveira</strong> | 🆔 #002
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="exam-date">30/06/2025 - 14:00</div>
+                                <span class="status-badge status-agendado">Agendado</span>
+                            </div>
+                        </div>
+                        <div class="exam-result">
+                            <strong>📋 Tipo:</strong> Imagem | <strong>🏥 Local:</strong> Clínica Radiológica<br>
+                            <strong>📝 Indicação:</strong> Investigação de tosse persistente<br>
+                            <strong>⚠️ Preparação:</strong> Remover objetos metálicos
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                            <button class="btn-small btn-warning" onclick="rescheduleExam(2)">📅 Reagendar</button>
+                            <button class="btn-small btn-success" onclick="viewPatient(2)">👤 Ver Paciente</button>
+                            <button class="btn-small btn-danger" onclick="cancelExam(2)">❌ Cancelar</button>
+                        </div>
+                    </div>
+
+                    <!-- Pending Results -->
+                    <h3 style="color: #2c3e50; margin: 40px 0 20px 0; border-left: 4px solid #f39c12; padding-left: 15px;">
+                        ⏳ Resultados Pendentes
+                    </h3>
+
+                    <div class="exam-card">
+                        <div class="exam-header">
+                            <div>
+                                <div class="exam-title">Ecocardiograma</div>
+                                <div style="color: #666; margin: 5px 0;">
+                                    👤 <strong>Carlos Ferreira</strong> | 🆔 #004
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="exam-date">28/06/2025</div>
+                                <span class="status-badge status-realizado">Realizado</span>
+                            </div>
+                        </div>
+                        <div class="exam-result">
+                            <strong>📋 Tipo:</strong> Cardiológico | <strong>🏥 Local:</strong> Cardio Center<br>
+                            <strong>📝 Indicação:</strong> Avaliação da função cardíaca<br>
+                            <strong>📞 Status:</strong> Aguardando laudo do especialista
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                            <button class="btn-small btn-primary" onclick="followUpExam(4)">📞 Acompanhar</button>
+                            <button class="btn-small btn-warning" onclick="requestUrgent(4)">⚡ Urgente</button>
+                            <button class="btn-small btn-success" onclick="viewPatient(4)">👤 Ver Paciente</button>
+                        </div>
+                    </div>
+
+                    <!-- Recent Results -->
+                    <h3 style="color: #2c3e50; margin: 40px 0 20px 0; border-left: 4px solid #27ae60; padding-left: 15px;">
+                        ✅ Resultados Recentes
+                    </h3>
+
+                    <div class="exam-card">
+                        <div class="exam-header">
+                            <div>
+                                <div class="exam-title">Glicemia de Jejum</div>
+                                <div style="color: #666; margin: 5px 0;">
+                                    👤 <strong>Lucia Mendes</strong> | 🆔 #005
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="exam-date">29/06/2025</div>
+                                <span class="status-badge status-resultado_pronto">Resultado Pronto</span>
+                            </div>
+                        </div>
+                        <div class="exam-result">
+                            <strong>📋 Tipo:</strong> Laboratório | <strong>🏥 Local:</strong> Lab Express<br>
+                            <strong>📊 Resultado:</strong> 95 mg/dL (Normal)<br>
+                            <strong>📝 Observação:</strong> Valores dentro da normalidade
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                            <button class="btn-small btn-primary" onclick="viewResult(5)">📊 Ver Completo</button>
+                            <button class="btn-small btn-success" onclick="downloadResult(5)">📥 Download</button>
+                            <button class="btn-small btn-warning" onclick="scheduleFollowUp(5)">📅 Agendar Retorno</button>
+                            <button class="btn-small btn-primary" onclick="addToHistory(5)">📋 Adicionar ao Histórico</button>
+                        </div>
+                    </div>
+
+                    <div class="exam-card">
+                        <div class="exam-header">
+                            <div>
+                                <div class="exam-title">Ultrassom Abdominal</div>
+                                <div style="color: #666; margin: 5px 0;">
+                                    👤 <strong>Ana Costa</strong> | 🆔 #003
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="exam-date">27/06/2025</div>
+                                <span class="status-badge status-entregue">Entregue</span>
+                            </div>
+                        </div>
+                        <div class="exam-result">
+                            <strong>📋 Tipo:</strong> Imagem | <strong>🏥 Local:</strong> Diagnóstico Center<br>
+                            <strong>📊 Resultado:</strong> Estruturas dentro da normalidade<br>
+                            <strong>📝 Observação:</strong> Resultado entregue ao paciente
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                            <button class="btn-small btn-primary" onclick="viewResult(3)">📊 Ver Resultado</button>
+                            <button class="btn-small btn-success" onclick="viewPatient(3)">👤 Ver Paciente</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Request Exam Modal -->
+    <div id="requestExamModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <h2 style="margin-bottom: 20px; color: #2c3e50;">🔬 Solicitar Exame</h2>
+            
+            <form id="requestExamForm">
+                <div class="form-group">
+                    <label for="examPatient">Paciente *</label>
+                    <select id="examPatient" required>
+                        <option value="">Selecione um paciente...</option>
+                        <option value="1">Maria Santos Silva</option>
+                        <option value="2">João Oliveira</option>
+                        <option value="3">Ana Costa</option>
+                        <option value="4">Carlos Ferreira</option>
+                        <option value="5">Lucia Mendes</option>
+                    </select>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="examType">Tipo de Exame *</label>
+                        <select id="examType" required>
+                            <option value="">Selecione...</option>
+                            <option value="laboratorio">Laboratório</option>
+                            <option value="imagem">Imagem</option>
+                            <option value="cardiologico">Cardiológico</option>
+                            <option value="neurologico">Neurológico</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="examName">Nome do Exame *</label>
+                        <select id="examName" required>
+                            <option value="">Selecione o tipo primeiro...</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="examIndication">Indicação Clínica *</label>
+                    <textarea id="examIndication" rows="3" required placeholder="Descreva a indicação médica para este exame..."></textarea>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="examUrgency">Urgência</label>
+                        <select id="examUrgency">
+                            <option value="rotina">Rotina</option>
+                            <option value="urgente">Urgente</option>
+                            <option value="emergencia">Emergência</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="examDate">Data Desejada</label>
+                        <input type="date" id="examDate">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="examPreparation">Preparação Necessária</label>
+                    <textarea id="examPreparation" rows="2" placeholder="Instruções de preparo (jejum, medicamentos, etc.)..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="examObservations">Observações</label>
+                    <textarea id="examObservations" rows="2" placeholder="Observações adicionais..."></textarea>
+                </div>
+                
+                <div style="display: flex; gap: 15px; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeRequestExamModal()">Cancelar</button>
+                    <button type="submit" class="btn">Solicitar Exame</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Result Modal -->
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 20px; color: #2c3e50;">📊 Registrar Resultado</h2>
+            
+            <form id="resultForm">
+                <div class="form-group">
+                    <label for="resultExam">Exame *</label>
+                    <select id="resultExam" required>
+                        <option value="">Selecione um exame...</option>
+                        <option value="1">Hemograma - Maria Santos</option>
+                        <option value="2">Raio-X - João Oliveira</option>
+                        <option value="4">Ecocardiograma - Carlos Ferreira</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="resultFile">Arquivo do Resultado</label>
+                    <input type="file" id="resultFile" accept=".pdf,.jpg,.png,.doc,.docx">
+                </div>
+                
+                <div class="form-group">
+                    <label for="resultDescription">Descrição do Resultado *</label>
+                    <textarea id="resultDescription" rows="4" required placeholder="Descreva os principais achados..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="resultStatus">Status *</label>
+                    <select id="resultStatus" required>
+                        <option value="normal">Normal</option>
+                        <option value="alterado">Alterado</option>
+                        <option value="inconclusivo">Inconclusivo</option>
+                    </select>
+                </div>
+                
+                <div style="display: flex; gap: 15px; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeResultModal()">Cancelar</button>
+                    <button type="submit" class="btn">Registrar Resultado</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // CORREÇÃO: JavaScript inline adicionado para todas as funcionalidades
+
+        // Funções para os modais
+        function openRequestExamModal() {
+            document.getElementById('requestExamModal').style.display = 'block';
+        }
+        
+        function closeRequestExamModal() {
+            document.getElementById('requestExamModal').style.display = 'none';
+        }
+        
+        function openResultModal() {
+            document.getElementById('resultModal').style.display = 'block';
+        }
+        
+        function closeResultModal() {
+            document.getElementById('resultModal').style.display = 'none';
+        }
+        
+        // Funções de notificação
+        function showNotification(message, type) {
+            type = type || 'info';
+            alert(message);
+        }
+        
+        // Placeholder functions para ações dos exames
+        function viewResult(id) { 
+            showNotification('Visualizando resultado do exame #' + id, 'info');
+        }
+        
+        function downloadResult(id) { 
+            showNotification('Baixando resultado do exame #' + id, 'success');
+        }
+        
+        function sendToPatient(id) { 
+            showNotification('Enviando resultado ao paciente #' + id, 'success');
+        }
+        
+        function printResult(id) { 
+            showNotification('Imprimindo resultado do exame #' + id, 'info');
+        }
+        
+        function rescheduleExam(id) { 
+            var newDate = prompt('Digite a nova data para o exame #' + id + ' (DD/MM/AAAA):');
+            if (newDate) {
+                showNotification('Exame #' + id + ' reagendado para ' + newDate, 'success');
+            }
+        }
+        
+        function viewPatient(id) { 
+            window.location.href = 'patients.php';
+        }
+        
+        function cancelExam(id) { 
+            if (confirm('Tem certeza que deseja cancelar o exame #' + id + '?')) {
+                showNotification('Exame #' + id + ' cancelado!', 'warning');
+            }
+        }
+        
+        function followUpExam(id) { 
+            showNotification('Acompanhando exame #' + id, 'info');
+        }
+        
+        function requestUrgent(id) { 
+            if (confirm('Solicitar urgência para o exame #' + id + '?')) {
+                showNotification('Urgência solicitada para o exame #' + id, 'warning');
+            }
+        }
+        
+        function scheduleFollowUp(id) { 
+            window.location.href = 'appointments.php';
+        }
+        
+        function addToHistory(id) { 
+            showNotification('Adicionando exame #' + id + ' ao histórico do paciente', 'success');
+        }
+        
+        // Dynamic exam name based on type
+        document.addEventListener('DOMContentLoaded', function() {
+            var examTypeSelect = document.getElementById('examType');
+            if (examTypeSelect) {
+                examTypeSelect.addEventListener('change', function() {
+                    var examNameSelect = document.getElementById('examName');
+                    var examType = this.value;
+                    examNameSelect.innerHTML = '<option value="">Selecione...</option>';
+                    
+                    var options = [];
+                    if (examType === 'laboratorio') {
+                        options = ['Hemograma Completo', 'Glicemia de Jejum', 'Colesterol Total', 'Urina Tipo I', 'Creatinina', 'TGP/TGO', 'PCR', 'Vitamina D'];
+                    } else if (examType === 'imagem') {
+                        options = ['Raio-X Tórax', 'Ultrassom Abdominal', 'Tomografia Computadorizada', 'Ressonância Magnética', 'Mamografia', 'Densitometria Óssea'];
+                    } else if (examType === 'cardiologico') {
+                        options = ['Ecocardiograma', 'Eletrocardiograma', 'Teste Ergométrico', 'Holter 24h', 'Mapa Pressórico'];
+                    } else if (examType === 'neurologico') {
+                        options = ['Eletroencefalograma', 'Ressonância Cerebral', 'Tomografia Cerebral', 'Polissonografia'];
+                    }
+                    
+                    options.forEach(function(opt) {
+                        var option = document.createElement('option');
+                        option.value = opt.toLowerCase().replace(/ /g, '_');
+                        option.textContent = opt;
+                        examNameSelect.appendChild(option);
+                    });
+                });
+            }
+            
+            // Filtros
+            var filterDate = document.getElementById('filterDate');
+            var filterStatus = document.getElementById('filterStatus');
+            var filterType = document.getElementById('filterType');
+            
+            if (filterDate) {
+                filterDate.addEventListener('change', function(e) {
+                    showNotification('Filtrando por data: ' + e.target.value, 'info');
+                });
+            }
+            
+            if (filterStatus) {
+                filterStatus.addEventListener('change', function(e) {
+                    showNotification('Filtrando por status: ' + e.target.options[e.target.selectedIndex].text, 'info');
+                });
+            }
+            
+            if (filterType) {
+                filterType.addEventListener('change', function(e) {
+                    showNotification('Filtrando por tipo: ' + e.target.options[e.target.selectedIndex].text, 'info');
+                });
+            }
+            
+            // Form submits
+            var requestForm = document.getElementById('requestExamForm');
+            if (requestForm) {
+                requestForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    var patient = document.getElementById('examPatient').options[document.getElementById('examPatient').selectedIndex]?.text;
+                    var examName = document.getElementById('examName').options[document.getElementById('examName').selectedIndex]?.text;
+                    
+                    if (patient && examName) {
+                        showNotification('Exame "' + examName + '" solicitado para ' + patient + ' com sucesso!', 'success');
+                        closeRequestExamModal();
+                        requestForm.reset();
+                        // Reset exam name select
+                        document.getElementById('examName').innerHTML = '<option value="">Selecione o tipo primeiro...</option>';
+                    } else {
+                        showNotification('Por favor, preencha todos os campos obrigatórios.', 'error');
+                    }
+                });
+            }
+            
+            var resultForm = document.getElementById('resultForm');
+            if (resultForm) {
+                resultForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    var exam = document.getElementById('resultExam').options[document.getElementById('resultExam').selectedIndex]?.text;
+                    var description = document.getElementById('resultDescription').value;
+                    
+                    if (exam && description) {
+                        showNotification('Resultado registrado para ' + exam + ' com sucesso!', 'success');
+                        closeResultModal();
+                        resultForm.reset();
+                    } else {
+                        showNotification('Por favor, preencha todos os campos obrigatórios.', 'error');
+                    }
+                });
+            }
+            
+            // Fechar modais ao clicar fora
+            var requestModal = document.getElementById('requestExamModal');
+            var resultModal = document.getElementById('resultModal');
+            
+            window.onclick = function(event) {
+                if (event.target === requestModal) {
+                    closeRequestExamModal();
+                }
+                if (event.target === resultModal) {
+                    closeResultModal();
+                }
+            };
+            
+            // Destacar menu ativo
+            var currentPage = window.location.pathname.split('/').pop();
+            document.querySelectorAll('.sidebar-menu a').forEach(function(link) {
+                var href = link.getAttribute('href');
+                if (href === currentPage) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
